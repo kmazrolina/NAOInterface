@@ -10,9 +10,9 @@ import Tkinter as tk
 import ttk
 import tkMessageBox
 import random
-from animations import animations, getIndex
+from theaterAnimTags import animTags
 
-GROUP = 0
+GROUP = '1'
 
 IP = '192.168.1.221'
 PORT = 9559
@@ -134,6 +134,16 @@ def setNAO():
         print("Error:")
         print(err)
 
+def getAnimTags():
+    animTags = list()
+    with open('animationTags/theaterAnimTags.txt') as f:
+        lines = f.readlines()[0:]
+        for line in lines:
+            animTags.append(line.split())
+    f.close()
+    print(animTags)
+    return animTags
+
 class App:
     def __init__(self, window, window_title):
        
@@ -158,51 +168,43 @@ class App:
         self.colorOff = "white"
         self.colorOn = "#64a225"
        
-        
-        self.window.minsize(height = 700, width = 900)
-        self.window.geometry("900x700")
+    
+        self.window.minsize(height = 700, width = 500)
+        self.window.geometry("500x700")
         # Create a canvas that can fit the above video source size
         self.canvas = tk.Canvas(window, bg =self.bgColor, bd = 0)
         self.canvas.pack(expand = True, fill = tk.BOTH, side = tk.LEFT)
         
         
-        #top frame (consits of top left and top right frame)
+        #top frame
         topFrame = tk.Frame(self.canvas, bg =self.bgColor, bd = 0)
-        topFrame.pack(expand = True, fill = tk.X, side = tk.TOP)
-        #top left frame (consists of 'language' and 'tutorial' butttons)
-        topLeftFrame = tk.Frame(topFrame, bg =self.bgColor, bd = 0)
-        topLeftFrame.pack( expand = True, fill = tk.X,side = tk.LEFT, padx = (30,30), pady = (30,30))
-        
-        
-        #top right frame (consists of 'IP' and 'Shut down' butttons)
-        topRightFrame = tk.Frame(topFrame, bg =self.bgColor, bd = 0)
-        topRightFrame.pack(padx = (30,30), pady = (30,30),expand = True, fill = tk.X, side = tk.RIGHT)
+        topFrame.pack(fill = tk.BOTH, side = tk.TOP, pady = (20,50), padx = (20,20))
         
         #ShutDown
         imShutDown = PIL.Image.open("shutDown.png")
         imShutDown = imShutDown.resize((25,25))
         imShutDown =  PIL.ImageTk.PhotoImage(imShutDown)
-        shutDownBut = tk.Button(topRightFrame, bd = 0, bg =self.bgColor,image = imShutDown, activebackground =self.lightGrey)
+        shutDownBut = tk.Button(topFrame, bd = 0, bg =self.bgColor,image = imShutDown, activebackground =self.lightGrey)
         shutDownBut.configure(command = self.turnOff)
-        shutDownBut.pack(side=tk.RIGHT, padx = (30,0))
+        shutDownBut.pack(side=tk.RIGHT, padx = (10,0))
         
         #IP
-        ipBorder = tk.Frame(topRightFrame, bg="white", bd = 0 )
-        ipBorder.pack(side = tk.RIGHT, fill = tk.X, padx = (10,0))
+        ipBorder = tk.Frame(topFrame, bg="white", bd = 0 )
+        ipBorder.pack(side = tk.RIGHT, fill = tk.X, padx = (0,10))
         IPLabelText = "Change IP"
         butIp = tk.Button(ipBorder,text = IPLabelText, bd = 0, command = self.changeIP, bg =self.lightGrey,fg = "white",font = ("Verdana", 10),padx = 3)
         butIp.pack(pady = (1,1), padx = (1,1), fill = tk.X)
         
 
-        #bottom frame (consists of: collumn right, collumn middle)
+        #bottom frame 
         bottomFrame = tk.Frame(self.canvas, bg=self.bgColor, bd = 0)
-        bottomFrame.pack(expand = True,fill = tk.BOTH, side = tk.BOTTOM)
+        bottomFrame.pack(expand = True,fill = tk.BOTH, side = tk.TOP)
     
-        #left collumn of bottom frame (cnsists of 'custom commands butttons' and )
+        #left collumn of bottom frame (cnsists of 'custom commands butttons')
         leftCol = tk.Frame(bottomFrame, bg=self.bgColor, bd = 0)
-        leftCol.pack(pady = (10,30), padx = (30,30), side = tk.LEFT, fill = tk.BOTH)
+        leftCol.pack(pady = (10,30), padx = (30,30), side = tk.TOP, fill = tk.BOTH)
         # buttons with phrases to be spoken by NAO
-        buttonsLabel = tk.Label(leftCol,text= "What NAO can say:", bg =self.bgColor, font = ("Verdana", 10), fg = "white")
+        buttonsLabel = tk.Label(leftCol,text= "Grupa " + GROUP, bg =self.bgColor, font = ("Verdana", 12), fg = "white")
         buttonsLabel.pack(fill = tk.BOTH, pady = (0,5))
         
         leftColButtons = tk.Text(leftCol, bg =self.bgColor, bd = 0, cursor = 'arrow' )
@@ -210,10 +212,9 @@ class App:
        
         
         #=========================== Commands ==============================
-
         self.commands = ["x"]
 
-        introBut = tk.Button(leftColButtons,text =self.commands[0],  bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 10), padx = 100)
+        introBut = tk.Button(leftColButtons,text =self.commands[0],  bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 12), padx = 100)
         introBut.configure(command = lambda: self.executeCommand(self.commands[0]))
         introBut.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
         
