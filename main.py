@@ -12,18 +12,132 @@ import tkMessageBox
 import random
 from animations import animations, getIndex
 
-import interface_WoOz as IWO
+GROUP = 0
 
 IP = '192.168.1.221'
 PORT = 9559
-LANGUAGE = "Polish"
-PROGRAM = 1
 
+#LANGUAGE = "English"
+LANGUAGE = "Polish"
+
+
+POSTURES = ['Stand', 'SitRelax', 'Crouch', 'LyingBack', 'LyingBelly', 'StandInit', 'StandZero']
+
+#proxtName (str): name of proxy we want to get
+#returns: proxy for given proxyName, set NAO IP and PORT
+def getProxy(proxyName):
+    if (proxyName == None):
+        print("func 'getProxy(proxyName)' lacking arg proxyName")
+        raise Exception("func 'ALProxy(proxyName, ip, port)' failed for empty proxyName")
+    try:
+        proxy = ALProxy(proxyName, IP, PORT)
+    except:
+        print("Could not get proxy: " + proxyName)
+    else:
+        return proxy
+
+#initiates all needed AL proxies
+def setProxies():
+    global textToSpeech
+    global animatedSpeech
+    global robotPosture
+    global videoService
+    global animationPlayer
+    global systemProxy
+    global autonomousLife
+    global leds
+    global motion
+ 
+
+    textToSpeech = getProxy("ALTextToSpeech")
+    animatedSpeech = getProxy("ALAnimatedSpeech")
+    robotPosture = getProxy("ALRobotPosture")
+    animationPlayer = getProxy("ALAnimationPlayer")
+    videoService = getProxy("ALVideoDevice")
+    autonomousLife = getProxy("ALAutonomousLife")
+    systemProxy = getProxy("ALSystem")
+    leds = getProxy("ALLeds")
+    motion = getProxy("ALMotion")
+
+    
+
+
+#posture (str): a posture which will be applied to NAO
+#   possible values: ['Crouch', 'LyingBack', 'LyingBelly', 'SitRelax', 'Stand', 'StandInit', 'StandZero']
+def setPosture(posture):
+    if (posture == None):
+        print("func 'setPosture(posture, speed)' lacking arg 'posture'")
+        return
+    elif (not posture in POSTURES):
+        print("func 'setPosture(posture, speed)' arg 'posture' has unsupported value")
+        return
+    speed = 0.4
+    robotPosture.goToPosture(posture, speed)
+
+
+#sets a default voice
+def defaultVoice():
+    textToSpeech.setVoice("naoenu")
+    textToSpeech.setParameter("pitchShift", 1.1)
+    textToSpeech.setParameter("speed", 85)
+    textToSpeech.setParameter("doubleVoice", 0)
+    textToSpeech.setParameter("doubleVoiceLevel", 0)
+    #reset leds
+    leds.fadeRGB("FaceLeds", "white",0.2)
+    
+
+#changes NAOs posture to standing if it wasnt before
+def setStandingPosture():
+    if (robotPosture.getPosture() != "Stand"):
+        setPosture("Stand")
+
+
+#sets Speech speed and language preferences
+def setSpeechSettings():
+    animatedSpeech.setBodyLanguageModeFromStr("contextual")
+    textToSpeech.setLanguage(LANGUAGE)
+    defaultVoice()
+
+#language (str): str representing the language for NAO to speak
+#   possible values: ['Polish', 'English']
+def setLanguage(language):
+    if (language == None):
+        print("func 'setLanguage(language)' lacking arg 'language'")
+        return
+    textToSpeech.setLanguage(language)
+    LANGUAGE = language
+    print("Language changed to: " + LANGUAGE)
+
+def setTags():
+    
+    tagToAnims = {}
+   
+    for i in animations:
+        if (i.path != None) and (i.path != "Movements"):
+            tagToAnims[i.tag] = [i.path]
+    
+    animationPlayer.addTagForAnimations(tagToAnims)
+
+
+def setNAO():
+    
+    try:
+        setProxies()
+        setLanguage(LANGUAGE)
+        setSpeechSettings()
+        setTags()
+        setStandingPosture()
+        autonomousLife.setState("solitary")
+        motion.setExternalCollisionProtectionEnabled("All",True)
+        
+    except BaseException as err:
+        print("Error:")
+        print(err)
 
 class App:
     def __init__(self, window, window_title):
        
-        IWO.setNAO()
+        setNAO()
 
         self.window = window
         self.window.title(window_title)
@@ -51,12 +165,27 @@ class App:
         self.canvas = tk.Canvas(window, bg =self.bgColor, bd = 0)
         self.canvas.pack(expand = True, fill = tk.BOTH, side = tk.LEFT)
         
-
-        #top right frame (consists of 'IP' buttton)
+        
+        #top frame (consits of top left and top right frame)
+        topFrame = tk.Frame(self.canvas, bg =self.bgColor, bd = 0)
+        topFrame.pack(expand = True, fill = tk.X, side = tk.TOP)
+        #top left frame (consists of 'language' and 'tutorial' butttons)
+        topLeftFrame = tk.Frame(topFrame, bg =self.bgColor, bd = 0)
+        topLeftFrame.pack( expand = True, fill = tk.X,side = tk.LEFT, padx = (30,30), pady = (30,30))
+        
+        
+        #top right frame (consists of 'IP' and 'Shut down' butttons)
         topRightFrame = tk.Frame(topFrame, bg =self.bgColor, bd = 0)
         topRightFrame.pack(padx = (30,30), pady = (30,30),expand = True, fill = tk.X, side = tk.RIGHT)
         
-
+        #ShutDown
+        imShutDown = PIL.Image.open("shutDown.png")
+        imShutDown = imShutDown.resize((25,25))
+        imShutDown =  PIL.ImageTk.PhotoImage(imShutDown)
+        shutDownBut = tk.Button(topRightFrame, bd = 0, bg =self.bgColor,image = imShutDown, activebackground =self.lightGrey, command = self.playAnimation)
+        shutDownBut.configure(command = self.turnOff)
+        shutDownBut.pack(side=tk.RIGHT, padx = (30,0))
+        
         #IP
         ipBorder = tk.Frame(topRightFrame, bg="white", bd = 0 )
         ipBorder.pack(side = tk.RIGHT, fill = tk.X, padx = (10,0))
@@ -65,7 +194,7 @@ class App:
         butIp.pack(pady = (1,1), padx = (1,1), fill = tk.X)
         
 
-        #bottom frame
+        #bottom frame (consists of: collumn right, collumn middle)
         bottomFrame = tk.Frame(self.canvas, bg=self.bgColor, bd = 0)
         bottomFrame.pack(expand = True,fill = tk.BOTH, side = tk.BOTTOM)
     
@@ -73,45 +202,26 @@ class App:
         leftCol = tk.Frame(bottomFrame, bg=self.bgColor, bd = 0)
         leftCol.pack(pady = (10,30), padx = (30,30), side = tk.LEFT, fill = tk.BOTH)
         # buttons with phrases to be spoken by NAO
-        buttonsLabel = tk.Label(leftCol, bg =self.bgColor, font = ("Verdana", 10), fg = "white")
+        buttonsLabel = tk.Label(leftCol,text= "What NAO can say:", bg =self.bgColor, font = ("Verdana", 10), fg = "white")
         buttonsLabel.pack(fill = tk.BOTH, pady = (0,5))
         
         leftColButtons = tk.Text(leftCol, bg =self.bgColor, bd = 0, cursor = 'arrow' )
         leftColButtons.pack(side = tk.TOP,expand = True, fill = tk.BOTH)
        
         
-        #=========================== Buttons ==============================
+        #=========================== Commands ==============================
 
-        self.commands = getCommands(PROGRAM)
+        self.commands = ["x"]
 
         introBut = tk.Button(leftColButtons,text =self.commands[0],  bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 10), padx = 100)
         introBut.configure(command = lambda: self.executeCommand(self.commands[0]))
         introBut.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
-
-        r1But = tk.Button(leftColButtons,text =self.commands[1],  bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 10), padx = 100)
-        r1But.configure(command = lambda: self.dialog(self.commands[1]))
-        r1But.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
-
-        r2But = tk.Button(leftColButtons,text =self.commands[2],  bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 10), padx = 100)
-        r2But.configure(command = lambda: self.dialog(self.commands[2]))
-        r2But.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
-
-        r3But = tk.Button(leftColButtons,text =self.commands[3],  bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 10), padx = 100)
-        r3But.configure(command = lambda: self.dialog(self.commands[3]))
-        r3But.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
-
-        r4But = tk.Button(leftColButtons,text =self.commands[4],  bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 10), padx = 100)
-        r4But.configure(command = lambda: self.dialog(self.commands[4]))
-        r4But.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
-
-        r5But = tk.Button(leftColButtons,text =self.commands[5],  bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 10), padx = 100)
-        r5But.configure(command = lambda: self.dialog(self.commands[5]))
-        r5But.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
         
+    
         
         window.mainloop()
 
-    
+     
     #Change IP
     def confirmIP(self,textField, IPwindow):
         global IP
@@ -163,7 +273,18 @@ class App:
         okBut.pack(side = tk.RIGHT, pady = (10,20), padx = (0, 20), fill = tk.X)
         
         ipWindow.mainloop()
-     
+      
+    #Turn off the robot    
+    def turnOff(self):
+        tkMessageBox.askquestion("Turn off NAO", "Are you sure you want to turn off the robot?")
+        systemProxy.shutdown()
+        print("Bye bye NAO")
+        self.destroy()
+           
+    
+    
+    # ====================================================================================================
+      
     #Execute commands
     def executeCommand(self, command):
         if command == "Introduction":
@@ -249,6 +370,7 @@ class App:
             setLanguage(LANGUAGE)
 
 
+   
 # Create a window and pass it to the Application object
-App(tk.Tk(), "NAO na scenie! Grupa " + PROGRAM)
+App(tk.Tk(), "Wizard of Oz for NAO")
 
