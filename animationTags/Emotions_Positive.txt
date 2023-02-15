@@ -1,0 +1,27 @@
+Amused_1
+Confident_1
+Ecstatic_1
+Enthusiastic_1
+Excited_1
+Excited_2
+Excited_3
+Happy_2
+Happy_1 
+Happy_3 
+Happy_4 
+Hungry_1 
+Hysterical_1 
+Interested_1
+Laugh_2 
+Laugh_3 
+Mocker_1 
+Peaceful_1 
+Proud_1 
+Proud_2
+Optimistic_1
+Relieved_1
+Shy_1 
+Shy_2
+Sure 1
+Winner_1 
+Winner_2
