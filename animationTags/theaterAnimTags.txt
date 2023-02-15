@@ -1,4 +1,3 @@
-# -*- encoding: UTF-8 -*-
 złość Angry_1 #CB2805
 strach Fear_1 #E1AE00
 smutek Sad_1 #008FE1
