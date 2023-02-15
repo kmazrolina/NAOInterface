@@ -182,7 +182,7 @@ class App:
         imShutDown = PIL.Image.open("shutDown.png")
         imShutDown = imShutDown.resize((25,25))
         imShutDown =  PIL.ImageTk.PhotoImage(imShutDown)
-        shutDownBut = tk.Button(topRightFrame, bd = 0, bg =self.bgColor,image = imShutDown, activebackground =self.lightGrey, command = self.playAnimation)
+        shutDownBut = tk.Button(topRightFrame, bd = 0, bg =self.bgColor,image = imShutDown, activebackground =self.lightGrey)
         shutDownBut.configure(command = self.turnOff)
         shutDownBut.pack(side=tk.RIGHT, padx = (30,0))
         
