@@ -146,9 +146,14 @@ def getAnimTags():
 
 
 #function to set up programms created in group work
-def getGroupProjects():
-    whi
-    commands = 
+def getGroupProject():
+    fileName = 'group_projects/'+ GROUP + '.txt'
+    with open(fileName) as f:
+        commands = list()
+        for i in f:
+            commands.append(i.strip())
+    f.close()
+    return commands
 
 
 
@@ -214,7 +219,7 @@ class App:
        
         
         #=========================== Commands ==============================
-        self.commands = ['złość', 'powiedz: hello!']
+        self.commands = getGroupProject()
         
         for i in self.commands:
             button = tk.Button(leftColButtons,text = i,  bd = 0, bg = animTags[getIndex( animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
