@@ -144,6 +144,14 @@ def getAnimTags():
     print(animTags)
     return animTags
 
+
+#function to set up programms created in group work
+def getGroupProjects():
+    whi
+    commands = 
+
+
+
 class App:
     def __init__(self, window, window_title):
        
