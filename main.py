@@ -10,7 +10,7 @@ import Tkinter as tk
 import ttk
 import tkMessageBox
 import random
-from theaterAnimTags import animTags
+from theaterAnimTags import animTags, getIndex
 
 GROUP = '1'
 
@@ -175,18 +175,12 @@ class App:
         self.canvas = tk.Canvas(window, bg =self.bgColor, bd = 0)
         self.canvas.pack(expand = True, fill = tk.BOTH, side = tk.LEFT)
         
-        
+
         #top frame
         topFrame = tk.Frame(self.canvas, bg =self.bgColor, bd = 0)
         topFrame.pack(fill = tk.BOTH, side = tk.TOP, pady = (20,50), padx = (20,20))
         
-        #ShutDown
-        imShutDown = PIL.Image.open("shutDown.png")
-        imShutDown = imShutDown.resize((25,25))
-        imShutDown =  PIL.ImageTk.PhotoImage(imShutDown)
-        shutDownBut = tk.Button(topFrame, bd = 0, bg =self.bgColor,image = imShutDown, activebackground =self.lightGrey)
-        shutDownBut.configure(command = self.turnOff)
-        shutDownBut.pack(side=tk.RIGHT, padx = (10,0))
+       
         
         #IP
         ipBorder = tk.Frame(topFrame, bg="white", bd = 0 )
@@ -212,11 +206,12 @@ class App:
        
         
         #=========================== Commands ==============================
-        self.commands = ["x"]
-
-        introBut = tk.Button(leftColButtons,text =self.commands[0],  bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 12), padx = 100)
-        introBut.configure(command = lambda: self.executeCommand(self.commands[0]))
-        introBut.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
+        self.commands = ['złość', 'powiedz: hello!']
+        
+        for i in self.commands:
+            button = tk.Button(leftColButtons,text = i,  bd = 0, bg = animTags[getIndex( animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+            button.configure(command = lambda i=i: self.executeCommand(i))
+            button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
         
     
         
@@ -275,12 +270,7 @@ class App:
         
         ipWindow.mainloop()
       
-    #Turn off the robot    
-    def turnOff(self):
-        tkMessageBox.askquestion("Turn off NAO", "Are you sure you want to turn off the robot?")
-        systemProxy.shutdown()
-        print("Bye bye NAO")
-        self.destroy()
+
            
     
     
@@ -288,90 +278,22 @@ class App:
       
     #Execute commands
     def executeCommand(self, command):
-        if command == "Introduction":
-            animatedSpeech.say("Hello!,")
-            animationPlayer.runTag("Hey_1")
-            animatedSpeech.say("Nice to meet you all!")
-            animatedSpeech.say("I think I already know some of you!")
-            animatedSpeech.say("Thank you for letting me come here to play with you today!")
-            animatedSpeech.say("Would you like to see what robots can do?")
-            time.sleep(3)
-            animatedSpeech.say("Look at my robotic moves!,")
-            animationPlayer.runTag("Robot_1")
-            time.sleep(3)
-            animatedSpeech.say("I really enjoy juggling.,")
-            animationPlayer.runTag("AirJuggle_1")
-            animatedSpeech.say("Can you juggle?, I definitely can!,")
-            time.sleep(3)
-            animatedSpeech.say("I can drive a car!, Look!,")
-            animationPlayer.runTag("DriveCar_1")
-            animatedSpeech.say("Sometimes others can't drive as well as me.,")
-            time.sleep(3)
-            animatedSpeech.say("I love to take pictures!,")
-            animationPlayer.runTag("TakePicture_1")
-            time.sleep(3)
-            animatedSpeech.say("I also love to play guitar!")
-            animationPlayer.runTag("AirGuitar_1")
-            time.sleep(3)
 
-            animatedSpeech.say("And what are your skills?, What do you like to do?")
-        elif command == 'Farewell':
-            animatedSpeech.say("Thank you for playing with me today!") 
-            animatedSpeech.say("It was a great pleasure to meet all of you!")
-            animationPlayer.runTag("LoveYou_1")
-            animatedSpeech.say("I hope we will meet together again!")
-            animatedSpeech.say("Good bye!")
-            animationPlayer.runTag("Hey_1")
-        elif command == "Ask for charger":
-            i = random.randint(0,2)
-            if i == 0:
-                textToSpeech.say("Could somebody plug my charger in, please?")
-            elif i == 1:
-                textToSpeech.say("Excuse me, my battery is low, could someone, plug my charger in, please?")
-        elif command == 'Pet Miro':
-            animatedSpeech.say("What a cutie!")
+        if command[0:7] != 'powiedz':
             try:
-                motion.angleInterpolationBezier(namesMiro, timesMiro, keysMiro)
+                animationPlayer.run(animTags[getIndex(command)][1])
             except BaseException as err:
-                print("Error: ")
+                print("Error:")
                 print(err)
-            animatedSpeech.say("Good boy!")
-            
-        elif command == "Phrase in French":
-            setLanguage("Polish")
-
-            i = random.randint(0,2)
-            if i == 0:
-                animatedSpeech.say("Bą żur")
-            elif i == 1:
-                animatedSpeech.say("Kel bel żurne nuzawą ożordui!")
-            else:
-                animatedSpeech.say("Komo, sawa?")
-
-            setLanguage(LANGUAGE)
-          
-        elif command == "Phrase in German":
-            setLanguage("Polish")
-            i = random.seed(2)
-            if i == 0:
-                animatedSpeech.say("Hallo, wij gejts ir?")
-            elif i == 1:
-                animatedSpeech.say("Majn Name ist NAO.")
-            else:
-                animatedSpeech.say("Ales hat ajnen ende, nur dij wurst hat cwaj.")
-            setLanguage(LANGUAGE)
-         
-        elif command == "Phrase in Japanese":
-            setLanguage("Polish")
-            i = random.randint(0,1)
-            if i == 0:
-                animatedSpeech.say("konniczuła")
-            elif i == 1:
-                animatedSpeech.say("arigato gozajimasu")
-            setLanguage(LANGUAGE)
+        else:
+            try:
+                animatedSpeech.say(command[8 : len(command)])
+            except BaseException as err:
+                print("Error:")
+                print(err)
 
 
    
 # Create a window and pass it to the Application object
-App(tk.Tk(), "Wizard of Oz for NAO")
+App(tk.Tk(), "Robotyczne przedstawienie: GRUPA " + GROUP)
 

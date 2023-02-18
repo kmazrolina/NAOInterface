@@ -1,8 +1,11 @@
 # -*- encoding: UTF-8 -*-
 def getIndex(animTags, tag):
-    for i in animTags:
-        if i[0] == tag:
-            return animTags.index(i)
+    if tag[0:7] == 'powiedz':
+        return 0
+    else:
+        for i in animTags:
+            if i[0] == tag:
+                return animTags.index(i)
 
 
 animTags = [
