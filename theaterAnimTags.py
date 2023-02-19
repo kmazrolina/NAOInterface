@@ -22,3 +22,4 @@ animTags = [
 ['brawo', 'Applause_1', '#730D87'], 
 ['machanie', 'Hey_1', '#CC22A8'], 
 ]
+
