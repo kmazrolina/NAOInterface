@@ -183,8 +183,8 @@ class App:
         self.colorOn = "#64a225"
        
     
-        self.window.minsize(height = 700, width = 500)
-        self.window.geometry("500x700")
+        self.window.minsize(height = 700, width = 800)
+        self.window.geometry("800x700")
         # Create a canvas that can fit the above video source size
         self.canvas = tk.Canvas(window, bg =self.bgColor, bd = 0)
         self.canvas.pack(expand = True, fill = tk.BOTH, side = tk.LEFT)
@@ -194,7 +194,6 @@ class App:
         topFrame = tk.Frame(self.canvas, bg =self.bgColor, bd = 0)
         topFrame.pack(fill = tk.BOTH, side = tk.TOP, pady = (20,10), padx = (20,20))
         
-       
         
         #IP
         ipBorder = tk.Frame(topFrame, bg="white", bd = 0 )
@@ -207,26 +206,41 @@ class App:
         #bottom frame 
         bottomFrame = tk.Frame(self.canvas, bg=self.bgColor, bd = 0)
         bottomFrame.pack(expand = True,fill = tk.BOTH, side = tk.TOP)
-    
-        #left collumn of bottom frame (cnsists of 'custom commands butttons')
-        leftCol = tk.Frame(bottomFrame, bg=self.bgColor, bd = 0)
-        leftCol.pack(pady = (10,30), padx = (30,30), side = tk.TOP, fill = tk.BOTH)
-        # buttons with phrases to be spoken by NAO
-        buttonsLabel = tk.Label(leftCol,text= "Grupa " + GROUP, bg =self.bgColor, font = ("Verdana", 12), fg = "white")
+        # buttons with animations
+        buttonsLabel = tk.Label(bottomFrame,text= "Grupa " + GROUP, bg =self.bgColor, font = ("Verdana", 12), fg = "white")
         buttonsLabel.pack(fill = tk.BOTH, pady = (0,5))
+
+
+        #left collumn of bottom frame
+        leftCol = tk.Frame(bottomFrame, bg=self.bgColor, bd = 0)
+        leftCol.pack(pady = (10,10), padx = (20,20), side = tk.LEFT, fill = tk.BOTH)
+        #center collumn of bottom frame
+        centerCol = tk.Frame(bottomFrame, bg=self.bgColor, bd = 0)
+        centerCol.pack(pady = (10,10), padx = (20,20), side = tk.LEFT, fill = tk.BOTH)
+        #left collumn of bottom frame
+        rightCol = tk.Frame(bottomFrame, bg=self.bgColor, bd = 0)
+        rightCol.pack(pady = (10,10), padx = (20,20), side = tk.LEFT, fill = tk.BOTH)
         
-        leftColButtons = tk.Text(leftCol, bg =self.bgColor, bd = 0, cursor = 'arrow' )
-        leftColButtons.pack(side = tk.TOP,expand = True, fill = tk.BOTH)
+        
        
         
         #=========================== Commands ==============================
         self.commands = getGroupProject()
-        
+        commandCounter = 0
         for i in self.commands:
-            button = tk.Button(leftColButtons,text = i,  bd = 0, bg = animTags[getIndex( animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
-            button.configure(command = lambda i=i: self.executeCommand(i))
-            button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
-        
+            if commandCounter < 8 :
+                button = tk.Button(leftCol,text = i,  bd = 0, bg = animTags[getIndex( animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                button.configure(command = lambda i=i: self.executeCommand(i))
+                button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
+            elif commandCounter < 16:
+                button = tk.Button(centerCol,text = i,  bd = 0, bg = animTags[getIndex( animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                button.configure(command = lambda i=i: self.executeCommand(i))
+                button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
+            else:
+                button = tk.Button(rightCol,text = i,  bd = 0, bg = animTags[getIndex( animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                button.configure(command = lambda i=i: self.executeCommand(i))
+                button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
+            commandCounter = commandCounter + 1
     
         
         window.mainloop()
@@ -286,22 +300,54 @@ class App:
       
 
            
-    
-    
     # ====================================================================================================
       
+    def executeMovement(self, movementTag):
+
+            i = getIndex(animations, movementTag)
+       
+            names = animations[i].movement[0]
+            times = animations[i].movement[1]
+            keys = animations[i].movement[2]   
+
+            try:
+                motion.angleInterpolationBezier(names, times, keys)
+            except BaseException as err:
+                print(err)
+
+            
+
     #Execute commands
     def executeCommand(self, command):
 
-        if command[0:7] != 'powiedz':
+        if command == 'diabeł':
+            try:
+                executeMovement('Devil')
+            except BaseException as err:
+                print("Error:")
+                print(err)
+        elif command == 'trąbka':
+            try:
+                ap.loadSoundSet("sound_set")
+                animatedSpeech.say("^runSound(sound_set/drinking_sound) ^waitSound(sound_set/drinking_sound)" )
+            except BaseException as err:
+                print("Error:")
+                print(err)
+        elif command == 'picie':
             try:
                 animationPlayer.runTag(animTags[getIndex(animTags,command)][1])
             except BaseException as err:
                 print("Error:")
                 print(err)
-        else:
+        elif command[0:7] != 'powiedz':
             try:
                 animatedSpeech.say(command[8 : len(command)])
+            except BaseException as err:
+                print("Error:")
+                print(err)
+        else:
+            try:
+                animationPlayer.runTag(animTags[getIndex(animTags,command)][1])
             except BaseException as err:
                 print("Error:")
                 print(err)
