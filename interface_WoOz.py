@@ -1,7 +1,7 @@
 # -*- encoding: UTF-8 -*-
 from tabnanny import check
 from timeit import repeat
-#from naoqi import ALProxy
+from naoqi import ALProxy
 import sys
 import time
 from turtle import bgcolor
@@ -13,7 +13,7 @@ import random
 from animations import animations, getIndex
 
 
-IP = '192.168.1.221'
+IP = '192.168.0.221'
 PORT = 9559
 
 #LANGUAGE = "English"
@@ -137,6 +137,7 @@ class App:
     def __init__(self, window, window_title):
        
         setNAO()
+        setLanguage(LANGUAGE)
 
         self.window = window
         self.window.title(window_title)
@@ -173,20 +174,24 @@ class App:
         topLeftFrame.pack( expand = True, fill = tk.X,side = tk.LEFT, padx = (30,30), pady = (30,30))
         
         #Language
+        
+        self.PLcolor = self.colorOn
+        self.ENGcolor = self.colorOff
+        
         if(LANGUAGE == 'Polish'):
-            PLcolor = self.colorOn
-            ENGcolor = self.colorOff
+            self.PLcolor = self.colorOn
+            self.ENGcolor = self.colorOff
         else:
-            PLcolor = self.colorOff
-            ENGcolor = self.colorOn
+            self.PLcolor = self.colorOff
+            self.ENGcolor = self.colorOn
 
         
-        self.PLBorder = tk.Frame(topLeftFrame, bg=PLcolor, bd = 0 )
+        self.PLBorder = tk.Frame(topLeftFrame, bg=self.PLcolor, bd = 0 )
         self.PLBorder.pack(side = tk.LEFT,  fill = tk.BOTH)
         self.butPL = tk.Button(self.PLBorder,text ="PL", bd = 0, command = self.langPL, bg =self.lightGrey,fg = "white",font = ("Verdana", 10), padx = 22)
         self.butPL.pack(pady = (1,1),padx = (1,1), fill = tk.BOTH, side = tk.LEFT )
 
-        self.ENGBorder = tk.Frame(topLeftFrame, bg=ENGcolor, bd = 0 )
+        self.ENGBorder = tk.Frame(topLeftFrame, bg=self.ENGcolor, bd = 0 )
         self.ENGBorder.pack(padx = (1,0), side = tk.LEFT,  fill = tk.BOTH)
         self.butENG = tk.Button(self.ENGBorder,text ="ENG", command = self.langENG, bd = 0, bg =self.lightGrey,fg = "white",font = ("Verdana", 10), padx = 20)
         self.butENG.pack(pady = (1,1),padx = (1,1), fill = tk.BOTH,side = tk.LEFT )
@@ -419,24 +424,27 @@ class App:
     #Change language to Polish
     def langPL(self):
         global LANGUAGE
-        if LANGUAGE == "English":
+        if LANGUAGE == 'English':
             try:
-                setLanguage(language)
+                setLanguage('Polish')
+                self.PLcolor = self.colorON
                 self.PLBorder.configure(bg = self.colorOn)
+                self.ENGcolor = self.colorOff
                 self.ENGBorder.configure(bg = self.colorOff)
-                LANGUAGE = language
+    
             except BaseException as err:
                 print("Could not set language to Polish.")
            
     #Change language to English      
     def langENG(self):
         global LANGUAGE
-        if LANGUAGE == "Polish":
+        if LANGUAGE == 'Polish':
             try:
-                setLanguage(language)
+                setLanguage('English')
+                self.PLcolor = self.colorOff
                 self.PLBorder.configure(bg = self.colorOff)
+                self.ENGcolor = self.colorOn
                 self.ENGBorder.configure(bg = self.colorOn)
-                LANGUAGE = language
             except BaseException as err:
                 print("Could not set language to English.")
             
@@ -617,8 +625,9 @@ class App:
         if animationTag == "Pick an animation":
             pass
         else:
+            i = getIndex(animations,animationTag)
             try:
-                if path == 'Movements':
+                if animations[i].path == 'Movements':
                     self.executeMovement(animationTag)
                 else:
                     print("Playing animation: "+animationTag)

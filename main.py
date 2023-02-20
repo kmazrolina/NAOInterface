@@ -1,7 +1,7 @@
 # -*- encoding: UTF-8 -*-
 from tabnanny import check
 from timeit import repeat
-#from naoqi import ALProxy
+from naoqi import ALProxy
 import sys
 import time
 from turtle import bgcolor
@@ -11,10 +11,11 @@ import ttk
 import tkMessageBox
 import random
 from theaterAnimTags import animTags, getIndex
+from animations import animations
 
 GROUP = '1'
 
-IP = '192.168.1.221'
+IP = '192.168.0.221'
 PORT = 9559
 
 #LANGUAGE = "English"
@@ -191,7 +192,7 @@ class App:
 
         #top frame
         topFrame = tk.Frame(self.canvas, bg =self.bgColor, bd = 0)
-        topFrame.pack(fill = tk.BOTH, side = tk.TOP, pady = (20,50), padx = (20,20))
+        topFrame.pack(fill = tk.BOTH, side = tk.TOP, pady = (20,10), padx = (20,20))
         
        
         
@@ -294,7 +295,7 @@ class App:
 
         if command[0:7] != 'powiedz':
             try:
-                animationPlayer.run(animTags[getIndex(command)][1])
+                animationPlayer.runTag(animTags[getIndex(animTags,command)][1])
             except BaseException as err:
                 print("Error:")
                 print(err)
