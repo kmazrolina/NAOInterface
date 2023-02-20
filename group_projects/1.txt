@@ -1,2 +1,11 @@
-złość
-powiedz: hello!
+złość 
+strach 
+smutek 
+płacz 
+zaskoczenie 
+szczęście 
+śmiech 
+zastanawianie się 
+ukłon 
+brawo 
+machanie 
