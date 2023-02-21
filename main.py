@@ -10,9 +10,8 @@ import Tkinter as tk
 import ttk
 import tkMessageBox
 import random
-from theaterAnimTags import animTags, getIndex
-from animations import animations
-
+import theaterAnimTags as ta
+import animations_build as ab
 GROUP = '1'
 
 IP = '192.168.0.221'
@@ -115,7 +114,7 @@ def setTags():
     
     tagToAnims = {}
    
-    for i in animations:
+    for i in ab.animations:
         if (i.path != None) and (i.path != "Movements"):
             tagToAnims[i.tag] = [i.path]
     
@@ -137,15 +136,7 @@ def setNAO():
         print("Error:")
         print(err)
 
-def getAnimTags():
-    animTags = list()
-    with open('animationTags/theaterAnimTags.txt') as f:
-        lines = f.readlines()[0:]
-        for line in lines:
-            animTags.append(line.split())
-    f.close()
-    print(animTags)
-    return animTags
+
 
 
 #function to set up programms created in group work
@@ -160,15 +151,17 @@ def getGroupProject():
 
 def getSounds():
 
-    soundList = list()
-    soundList.append(audioPlayer.loadFile("drinking_sound.wav"))
+    global soundList
+    soundList = audioPlayer.loadFile("/drinking_sound.wav")
 
 
 
 class App:
     def __init__(self, window, window_title):
        
+       
         setNAO()
+        #getSounds()
 
         self.window = window
         self.window.title(window_title)
@@ -236,15 +229,15 @@ class App:
         commandCounter = 0
         for i in self.commands:
             if commandCounter < 8 :
-                button = tk.Button(leftCol,text = i,  bd = 0, bg = animTags[getIndex( animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                button = tk.Button(leftCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
                 button.configure(command = lambda i=i: self.executeCommand(i))
                 button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
             elif commandCounter < 16:
-                button = tk.Button(centerCol,text = i,  bd = 0, bg = animTags[getIndex( animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
                 button.configure(command = lambda i=i: self.executeCommand(i))
                 button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
             else:
-                button = tk.Button(rightCol,text = i,  bd = 0, bg = animTags[getIndex( animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                button = tk.Button(rightCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
                 button.configure(command = lambda i=i: self.executeCommand(i))
                 button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
             commandCounter = commandCounter + 1
@@ -311,41 +304,57 @@ class App:
       
     def executeMovement(self, movementTag):
 
-            i = getIndex(animations, movementTag)
+            i = ab.getIndex(ab.animations, movementTag)
        
-            names = animations[i].movement[0]
-            times = animations[i].movement[1]
-            keys = animations[i].movement[2]   
+            names = ab.animations[i].movement[0]
+            times = ab.animations[i].movement[1]
+            keys = ab.animations[i].movement[2]   
 
+                
+            if movementTag == 'Dead':
+                try:
+                    leds.off("AllLeds")
+                except BaseException as err:
+                    print(err)
             try:
-                motion.angleInterpolationBezier(names, times, keys)
+                motion.post.angleInterpolationBezier(names, times, keys)
             except BaseException as err:
                 print(err)
+            if movementTag == 'Dead':
+                try:
+                    leds.on("AllLeds")
+                except BaseException as err:
+                    print(err)
+
+            
+            
+            
 
             
 
     #Execute commands
     def executeCommand(self, command):
+        
 
-        if command == 'diabeł':
+        if command == 'trąbka':
             try:
-                executeMovement('Devil')
-            except BaseException as err:
-                print("Error:")
-                print(err)
-        elif command == 'trąbka':
-            try:
-                animatedSpeech.say("^startSound(drinking_sound.wav) ^waitSound(drinking_sound.wav)" )
+                animatedSpeech.say("^run(trumpet/trumpet_dir) ^wait(trumpet/trumpet_dir)")
+                
             except BaseException as err:
                 print("Error:")
                 print(err)
         elif command == 'picie':
             try:
-                animationPlayer.runTag(animTags[getIndex(animTags,command)][1])
+                animationPlayer.runTag(ta.animTags[ta.getIndex(ta.animTags,command)][1])
             except BaseException as err:
                 print("Error:")
                 print(err)
-        elif command[0:7] != 'powiedz':
+        elif command == 'ptak':
+            self.executeMovement('Bird')
+        elif command == 'śmierć':
+            self.executeMovement('Dead')
+
+        elif command[0:7] == 'powiedz':
             try:
                 animatedSpeech.say(command[8 : len(command)])
             except BaseException as err:
@@ -353,7 +362,7 @@ class App:
                 print(err)
         else:
             try:
-                animationPlayer.runTag(animTags[getIndex(animTags,command)][1])
+                animationPlayer.runTag(ta.animTags[ta.getIndex(ta.animTags,command)][1])
             except BaseException as err:
                 print("Error:")
                 print(err)
