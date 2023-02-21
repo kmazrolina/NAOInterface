@@ -12,6 +12,8 @@ import tkMessageBox
 import random
 import theaterAnimTags as ta
 import animations_build as ab
+
+
 GROUP = '1'
 
 IP = '192.168.0.221'
@@ -161,7 +163,7 @@ class App:
        
        
         setNAO()
-        #getSounds()
+        setLanguage('Polish')
 
         self.window = window
         self.window.title(window_title)
