@@ -1,18 +1,20 @@
-złość 
-strach 
-smutek 
-płacz 
-zaskoczenie 
-szczęście 
-śmiech 
-zastanawianie się 
-ukłon 
-brawo 
-machanie 
-rycerz
+powiedz: hejka
+złość
+strach
+smutek
+płacz
+zaskoczenie
+radość
+śmiech
+zastanawianie się
+ukłon
+brawo
+machanie
+smok
 picie
+rycerz
 diabeł
 trąbka
-potwór
 śmierć
 ptak
+zwycięstwo
