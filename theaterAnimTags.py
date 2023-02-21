@@ -6,6 +6,7 @@ def getIndex(animTags, tag):
         for i in animTags:
             if i[0] == tag:
                 return animTags.index(i)
+    
 
 
 animTags = [
@@ -28,6 +29,6 @@ animTags = [
 ['trąbka', 'Trumpet', '#E1D816'],
 ['śmierć', 'Dead','#090902' ],
 ['ptak', 'Bird', '#D845A9'],
-['zwycięstwo', 'Winner_1', '#']
+['zwycięstwo', 'Winner_1', '#3FEE1C']
 ]
 

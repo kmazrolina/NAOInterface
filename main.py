@@ -349,7 +349,7 @@ class App:
                 print(err)
         elif command == 'picie':
             try:
-                animationPlayer.runTag(ta.animTags[ta.getIndex(ta.animTags,command)][1])
+                animatedSpeech.say("^run(drink-695af8/drink_dir) ^wait(drink-695af8/drink_dir)")
             except BaseException as err:
                 print("Error:")
                 print(err)
