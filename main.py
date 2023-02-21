@@ -48,6 +48,7 @@ def setProxies():
     global autonomousLife
     global leds
     global motion
+    global audioPlayer
  
 
     textToSpeech = getProxy("ALTextToSpeech")
@@ -59,6 +60,7 @@ def setProxies():
     systemProxy = getProxy("ALSystem")
     leds = getProxy("ALLeds")
     motion = getProxy("ALMotion")
+    audioPlayer = getProxy("ALAudioPlayer")
 
     
 
@@ -156,6 +158,11 @@ def getGroupProject():
     f.close()
     return commands
 
+def getSounds():
+
+    soundList = list()
+    soundList.append(audioPlayer.loadFile("drinking_sound.wav"))
+
 
 
 class App:
@@ -172,7 +179,7 @@ class App:
         self.lightGrey = '#3a4750' #dark grey
         self.lightLightGrey = '#f5f5f5' #offwhite
         self.greenCol = '#64a225'  #light green
-        self.offWhite = '#E0E2E2' #ofwhite
+        self.offWhite = '#E0E2E2' #offwhite
         self.greenGrey = "#8d989c"
         self.pinkCol = "#936A7C"
         self.redCol = "#F56141"
@@ -328,8 +335,7 @@ class App:
                 print(err)
         elif command == 'trąbka':
             try:
-                ap.loadSoundSet("sound_set")
-                animatedSpeech.say("^runSound(sound_set/drinking_sound) ^waitSound(sound_set/drinking_sound)" )
+                animatedSpeech.say("^startSound(drinking_sound.wav) ^waitSound(drinking_sound.wav)" )
             except BaseException as err:
                 print("Error:")
                 print(err)
