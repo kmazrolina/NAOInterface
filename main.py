@@ -229,15 +229,15 @@ class App:
         commandCounter = 0
         for i in self.commands:
             if commandCounter < 8 :
-                button = tk.Button(leftCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                button = tk.Button(leftCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
                 button.configure(command = lambda i=i: self.executeCommand(i))
                 button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
             elif commandCounter < 16:
-                button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
                 button.configure(command = lambda i=i: self.executeCommand(i))
                 button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
             else:
-                button = tk.Button(rightCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags , i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                button = tk.Button(rightCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
                 button.configure(command = lambda i=i: self.executeCommand(i))
                 button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
             commandCounter = commandCounter + 1
@@ -310,10 +310,10 @@ class App:
             times = ab.animations[i].movement[1]
             keys = ab.animations[i].movement[2]   
 
-                
+            print(movementTag)
             if movementTag == 'Dead':
                 try:
-                    leds.off("AllLeds")
+                    leds.setIntensity("AllLeds", 0)
                 except BaseException as err:
                     print(err)
             try:
@@ -322,7 +322,7 @@ class App:
                 print(err)
             if movementTag == 'Dead':
                 try:
-                    leds.on("AllLeds")
+                    leds.setIntensity("AllLeds", 1)
                 except BaseException as err:
                     print(err)
 
@@ -338,10 +338,14 @@ class App:
 
         if command == 'trąbka':
             try:
-                animatedSpeech.say("^run(trumpet/trumpet_dir) ^wait(trumpet/trumpet_dir)")
+                animatedSpeech.say("^run(trumpet-89fce9/trumpet_dir) ^wait(trumpet-89fce9rumpet/trumpet_dir)")
                 
             except BaseException as err:
                 print("Error:")
+                print(err)
+            try:
+                leds.on("AllLeds")
+            except BaseException as err:
                 print(err)
         elif command == 'picie':
             try:
@@ -353,6 +357,23 @@ class App:
             self.executeMovement('Bird')
         elif command == 'śmierć':
             self.executeMovement('Dead')
+        elif command == 'diabeł':
+            try:
+                leds.fadeRGB("AllLeds",'red', 1)
+            except BaseException as err:
+                print(err)
+            
+            try:
+                animationPlayer.runTag(ta.animTags[ta.getIndex(ta.animTags,command)][1])
+            except BaseException as err:
+                print("Error:")
+                print(err)
+            try:
+                leds.fadeRGB("AllLeds",'red', 1)
+                leds.fadeRGB("AllLeds", 'white',1)
+            except BaseException as err:
+                print(err)
+            
 
         elif command[0:7] == 'powiedz':
             try:
