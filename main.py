@@ -14,7 +14,7 @@ import theaterAnimTags as ta
 import animations_build as ab
 import group_projects
 
-GROUP = '4'
+GROUP = '5'
 
 IP = '192.168.0.221'
 PORT = 9559
@@ -150,6 +150,19 @@ class App:
             print("Error:")
             print(err)
 
+        #red devil eyes
+        if GROUP == '2':
+            try:
+                leds.fadeRGB("AllLeds",'red', 600)
+            except BaseException as err:
+                print(err)
+        elif GROUP == '0': #green dragon eyes
+            try:
+                leds.fadeRGB("AllLeds",'green', 600)
+            except BaseException as err:
+                print(err)
+            
+            
         self.window = window
         self.window.title(window_title)
 
@@ -236,9 +249,9 @@ class App:
             except BaseException as e:
                 #przyciski bez obrazkow
                 print(e)
-                if commandCounter <= 4 :
+                if commandCounter <= 8 :
                     button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
-                elif commandCounter <= 8:
+                elif commandCounter <= 16:
                     button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
                 else:
                     button = tk.Button(rightCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
@@ -340,8 +353,8 @@ class App:
     #Execute commands
     def executeCommand(self, command):
         
-
-        if command == 'trąbka':
+        #custom choregraphe animations with sounds
+        if command == 'hejnał':
             try:
                 animatedSpeech.say("^run(trumpet-89fce9/trumpet_dir) ^wait(trumpet-89fce9rumpet/trumpet_dir)")
                 
@@ -358,34 +371,27 @@ class App:
             except BaseException as err:
                 print("Error:")
                 print(err)
-        elif command == 'ptak':
-            self.executeMovement('Bird')
+        
+        #custom movement - choregraphe export
         elif command == 'śmierć':
             self.executeMovement('Dead')
-        elif command == 'diabeł':
-            try:
-                leds.fadeRGB("AllLeds",'red', 1)
-            except BaseException as err:
-                print(err)
-            
-            try:
-                animationPlayer.runTag(ta.animTags[ta.getIndex(ta.animTags,command)][1])
-            except BaseException as err:
-                print("Error:")
-                print(err)
-            try:
-                leds.fadeRGB("AllLeds",'red', 1)
-                leds.fadeRGB("AllLeds", 'white',1)
-            except BaseException as err:
-                print(err)
-            
 
+        #Posture change animations
+        elif command == 'siadanie':
+            setPosture('Crouch')
+        elif command == 'wstawanie':
+            setPosture('Stand')
+        elif command == 'spanie':
+            setPosture('LyingBack')
+
+        #say text
         elif command[0:7] == 'powiedz':
             try:
                 animatedSpeech.say(command[8 : len(command)])
             except BaseException as err:
                 print("Error:")
                 print(err)
+        #preprogrammed animations
         else:
             try:
                 animationPlayer.runTag(ta.animTags[ta.getIndex(ta.animTags,command)][1])

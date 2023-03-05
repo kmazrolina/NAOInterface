@@ -28,15 +28,12 @@ animTags = [
 ['hejnał', 'Trumpet', '#E1D816'],
 ['śmierć', 'Dead','#090902' ],
 ['ptak', 'Bird', '#D845A9'],
-['zwycięstwo', 'Winner_1', '#3FEE1C']
+['zwycięstwo', 'Winner_1', '#3FEE1C'],
+['siadanie', 'Sit', '#E9EBD8'],
+['wstawanie', 'Stand', '#E9EBD8'],
+['spanie', 'Sleep', '#5DBFC1'],
+['jedzenie', 'Eat', '#DAF7A6']
 ]
-"""
-siadanie E9EBD8
-wstawanie E9EBD8
-spanie  dodac animacje ze spaniem na kucajaco? #5DBFC1
-
- jedzenie #DAF7A6
-"""
 
 
 
