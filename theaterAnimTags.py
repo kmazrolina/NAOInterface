@@ -31,10 +31,11 @@ animTags = [
 ['zwycięstwo', 'Winner_1', '#3FEE1C']
 ]
 """
-siadanie
-wstawanie
-spanie  dodac animacje ze spaniem na kucajaco?
- jedzenie
+siadanie E9EBD8
+wstawanie E9EBD8
+spanie  dodac animacje ze spaniem na kucajaco? #5DBFC1
+
+ jedzenie #DAF7A6
 """
 
 

@@ -14,7 +14,7 @@ import theaterAnimTags as ta
 import animations_build as ab
 import group_projects
 
-GROUP = '1'
+GROUP = '4'
 
 IP = '192.168.0.221'
 PORT = 9559
@@ -155,7 +155,7 @@ class App:
 
 
         #colors
-        self.bgColor = '#303841' #dark grey
+        self.bgColor = '#2A2A2A' #dark grey
         self.lightGrey = '#3a4750' #dark grey
         self.lightLightGrey = '#f5f5f5' #offwhite
         self.greenCol = '#64a225'  #light green
@@ -170,8 +170,8 @@ class App:
         self.colorOn = "#64a225"
        
     
-        self.window.minsize(height = 700, width = 800)
-        self.window.geometry("800x700")
+        self.window.minsize(height = 800, width = 1100)
+        self.window.geometry("1100x800")
         # Create a canvas that can fit the above video source size
         self.canvas = tk.Canvas(window, bg =self.bgColor, bd = 0)
         self.canvas.pack(expand = True, fill = tk.BOTH, side = tk.LEFT)
@@ -221,24 +221,24 @@ class App:
             
             try:
                 #przyciski z obrazkami
-                if commandCounter >= 8 :
-                    button = tk.Button(leftCol,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2],  width = 153, height = 153 )
-                elif commandCounter < 16:
-                    button = tk.Button(centerCol, bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2] )
+                if commandCounter <= 4 :
+                    button = tk.Button(leftCol,  bd = 0, bg = self.bgColor, activebackground = self.bgColor)
+                elif commandCounter <= 8:
+                    button = tk.Button(centerCol, bd = 0,bg = self.bgColor, activebackground = self.bgColor )
                 else:
-                    button = tk.Button(rightCol, bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2])
+                    button = tk.Button(rightCol, bd = 0,bg = self.bgColor, activebackground = self.bgColor)
                 path = "button_graphics\\" +group_projects.commands_no_utf[int(GROUP)-1][self.commands.index(i)] +".png"
                 butIm = PIL.Image.open(path)
-                butIm = butIm.resize((150,150))
+                butIm = butIm.resize((476,100))
                 butIm =  PIL.ImageTk.PhotoImage(butIm)
                 button.configure(image = butIm)
                 button.image = butIm
             except BaseException as e:
                 #przyciski bez obrazkow
                 print(e)
-                if commandCounter < 8 :
+                if commandCounter <= 4 :
                     button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
-                elif commandCounter < 16:
+                elif commandCounter <= 8:
                     button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
                 else:
                     button = tk.Button(rightCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
