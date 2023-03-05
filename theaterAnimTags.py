@@ -17,7 +17,6 @@ animTags = [
 ['płacz', 'Sad_1', '#073876'], 
 ['zaskoczenie', 'Surprise_3', '#EB900C'], 
 ['radość', 'Happy_3', '#11BF08'], 
-['śmiech', 'Laugh_2', '#81D80A'], 
 ['zastanawianie się', 'Think_1', '#B3AF33'], 
 ['ukłon', 'BowShort_1', '#87450D'], 
 ['brawo', 'Applause_1', '#730D87'], 
@@ -25,10 +24,18 @@ animTags = [
 ['smok','Monster_1', '#7EBD23'],
 ['picie', 'Drink_1', '#56C1C8'],
 ['rycerz', 'Knight_1', '#A1250F'],
-['diabeł', 'Laugh_3', '#080201'],
-['trąbka', 'Trumpet', '#E1D816'],
+['śmiech', 'Laugh_3', '#080201'],
+['hejnał', 'Trumpet', '#E1D816'],
 ['śmierć', 'Dead','#090902' ],
 ['ptak', 'Bird', '#D845A9'],
 ['zwycięstwo', 'Winner_1', '#3FEE1C']
 ]
+"""
+siadanie
+wstawanie
+spanie  dodac animacje ze spaniem na kucajaco?
+ jedzenie
+"""
+
+
 

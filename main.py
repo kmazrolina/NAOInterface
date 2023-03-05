@@ -141,22 +141,13 @@ def setNAO():
 
 
 
-#function to set up programms created in group work
-def getGroupProject():
-    fileName = 'group_projects/'+ GROUP + '.txt'
-    with open(fileName) as f:
-        commands = list()
-        for i in f:
-            commands.append(i.strip())
-    f.close()
-    return commands
 
-def getSounds():
-
-    global soundList
-    soundList = audioPlayer.loadFile("/drinking_sound.wav")
-
-
+def replacePolishCharacters(word):
+    for i in word:
+        print(i)
+        print( ord(i))
+        
+    return word
 
 class App:
     def __init__(self, window, window_title):
@@ -231,19 +222,20 @@ class App:
        
         
         #=========================== Commands ==============================
-        self.commands = getGroupProject()
+        self.commands = group_projects.commands[GROUP]
         commandCounter = 0
         
         
         for i in self.commands:
+            
             try:
                 #przyciski z obrazkami
-                path = "button_graphics\\" + i + ".png"
+                path = "button_graphics\\" + replacePolishCharacters(i) + ".png"
                 butIm = PIL.Image.open(path)
                 butIm = butIm.resize((150,150))
                 butIm =  PIL.ImageTk.PhotoImage(butIm)
                 if commandCounter >= 8 :
-                    button = tk.Button(leftCol,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], image = butIm )
+                    button = tk.Button(leftCol,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], image = butIm,  width = 153, height = 153 )
                 elif commandCounter < 16:
                     button = tk.Button(centerCol, bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], image = butIm)
                 else:
