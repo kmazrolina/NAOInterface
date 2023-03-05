@@ -1,7 +1,7 @@
 # -*- encoding: UTF-8 -*-
 from tabnanny import check
 from timeit import repeat
-from naoqi import ALProxy
+#from naoqi import ALProxy
 import sys
 import time
 from turtle import bgcolor
@@ -163,7 +163,11 @@ class App:
        
        
         setNAO()
-        setLanguage('Polish')
+        try:
+            setLanguage('Polish')
+        except BaseException as err:
+            print("Error:")
+            print(err)
 
         self.window = window
         self.window.title(window_title)
@@ -229,19 +233,33 @@ class App:
         #=========================== Commands ==============================
         self.commands = getGroupProject()
         commandCounter = 0
+        
+        
         for i in self.commands:
-            if commandCounter < 8 :
-                button = tk.Button(leftCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
-                button.configure(command = lambda i=i: self.executeCommand(i))
-                button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
-            elif commandCounter < 16:
-                button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
-                button.configure(command = lambda i=i: self.executeCommand(i))
-                button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
-            else:
-                button = tk.Button(rightCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
-                button.configure(command = lambda i=i: self.executeCommand(i))
-                button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
+            try:
+                #przyciski z obrazkami
+                path = "button_graphics\\" + i + ".png"
+                butIm = PIL.Image.open(path)
+                butIm = butIm.resize((150,150))
+                butIm =  PIL.ImageTk.PhotoImage(butIm)
+                if commandCounter >= 8 :
+                    button = tk.Button(leftCol,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], image = butIm )
+                elif commandCounter < 16:
+                    button = tk.Button(centerCol, bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], image = butIm)
+                else:
+                    button = tk.Button(rightCol, bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], image = butIm)
+            except BaseException as e:
+                #przyciski bez obrazkow
+                print(e)
+                if commandCounter < 8 :
+                    button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                elif commandCounter < 16:
+                    button = tk.Button(centerCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+                else:
+                    button = tk.Button(rightCol,text = i,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags, i )][2], fg = "white", font = ("Verdana", 12), padx = 100, pady = 10)
+            
+            button.configure(command = lambda i=i: self.executeCommand(i))
+            button.pack(pady = (10,10), padx = (10,10), fill = tk.BOTH)
             commandCounter = commandCounter + 1
     
         
@@ -257,7 +275,7 @@ class App:
         setNAO()
         IPwindow.destroy()
 
-    #Add commands for NAO to say - opens new window
+  
     def changeIP(self):
         ipWindow = tk.Toplevel(self.window, bg = self.greenGrey)
         ipWindow.geometry("250x150")
