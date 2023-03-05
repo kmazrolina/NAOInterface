@@ -12,7 +12,7 @@ import tkMessageBox
 import random
 import theaterAnimTags as ta
 import animations_build as ab
-
+import group_projects
 
 GROUP = '1'
 
@@ -139,16 +139,6 @@ def setNAO():
         print(err)
 
 
-
-
-
-def replacePolishCharacters(word):
-    for i in word:
-        print(i)
-        print( ord(i))
-        
-    return word
-
 class App:
     def __init__(self, window, window_title):
        
@@ -222,7 +212,8 @@ class App:
        
         
         #=========================== Commands ==============================
-        self.commands = group_projects.commands[GROUP]
+        self.commands = group_projects.commands[int(GROUP)-1]
+
         commandCounter = 0
         
         
@@ -230,16 +221,18 @@ class App:
             
             try:
                 #przyciski z obrazkami
-                path = "button_graphics\\" + replacePolishCharacters(i) + ".png"
+                if commandCounter >= 8 :
+                    button = tk.Button(leftCol,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2],  width = 153, height = 153 )
+                elif commandCounter < 16:
+                    button = tk.Button(centerCol, bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2] )
+                else:
+                    button = tk.Button(rightCol, bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2])
+                path = "button_graphics\\" +group_projects.commands_no_utf[int(GROUP)-1][self.commands.index(i)] +".png"
                 butIm = PIL.Image.open(path)
                 butIm = butIm.resize((150,150))
                 butIm =  PIL.ImageTk.PhotoImage(butIm)
-                if commandCounter >= 8 :
-                    button = tk.Button(leftCol,  bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], image = butIm,  width = 153, height = 153 )
-                elif commandCounter < 16:
-                    button = tk.Button(centerCol, bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], image = butIm)
-                else:
-                    button = tk.Button(rightCol, bd = 0, bg = ta.animTags[ta.getIndex( ta.animTags,i )][2], image = butIm)
+                button.configure(image = butIm)
+                button.image = butIm
             except BaseException as e:
                 #przyciski bez obrazkow
                 print(e)
