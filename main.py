@@ -1,7 +1,7 @@
 # -*- encoding: UTF-8 -*-
 from tabnanny import check
 from timeit import repeat
-#from naoqi import ALProxy
+from naoqi import ALProxy
 import sys
 import time
 from turtle import bgcolor
@@ -14,7 +14,7 @@ import theaterAnimTags as ta
 import animations_build as ab
 import group_projects
 
-GROUP = '5'
+GROUP = '3'
 
 IP = '192.168.0.221'
 PORT = 9559
@@ -92,8 +92,7 @@ def defaultVoice():
 
 #changes NAOs posture to standing if it wasnt before
 def setStandingPosture():
-    if (robotPosture.getPosture() != "Stand"):
-        setPosture("Stand")
+    setPosture("Stand")
 
 
 #sets Speech speed and language preferences
@@ -138,6 +137,26 @@ def setNAO():
         print("Error:")
         print(err)
 
+def characterEyes():
+    #red devil eyes
+    if GROUP == '3':
+        try:
+            autonomousLife.setAutonomousAbilityEnabled("AutonomousBlinking", False)
+            leds.post.fadeRGB("AllLeds",'red', 1)
+        except BaseException as err:
+            print(err)
+    elif GROUP == '1': #green dragon eyes
+        try:
+            autonomousLife.setAutonomousAbilityEnabled("AutonomousBlinking", False)
+            leds.post.fadeRGB("AllLeds",'green', 1)
+        except BaseException as err:
+            print(err)
+    else:
+        try:
+            autonomousLife.setAutonomousAbilityEnabled("AutonomousBlinking", True)
+            leds.post.fadeRGB("AllLeds",'white', 1)
+        except BaseException as err:
+            print(err)
 
 class App:
     def __init__(self, window, window_title):
@@ -150,17 +169,7 @@ class App:
             print("Error:")
             print(err)
 
-        #red devil eyes
-        if GROUP == '2':
-            try:
-                leds.fadeRGB("AllLeds",'red', 600)
-            except BaseException as err:
-                print(err)
-        elif GROUP == '0': #green dragon eyes
-            try:
-                leds.fadeRGB("AllLeds",'green', 600)
-            except BaseException as err:
-                print(err)
+        characterEyes()
             
             
         self.window = window
@@ -352,10 +361,12 @@ class App:
 
     #Execute commands
     def executeCommand(self, command):
-        
+       
         #custom choregraphe animations with sounds
         if command == 'hejnał':
+             
             try:
+                setStandingPosture()
                 animatedSpeech.say("^run(trumpet-89fce9/trumpet_dir) ^wait(trumpet-89fce9rumpet/trumpet_dir)")
                 
             except BaseException as err:
@@ -366,6 +377,7 @@ class App:
             except BaseException as err:
                 print(err)
         elif command == 'picie':
+            setStandingPosture()
             try:
                 animatedSpeech.say("^run(drink-695af8/drink_dir) ^wait(drink-695af8/drink_dir)")
             except BaseException as err:
@@ -374,6 +386,7 @@ class App:
         
         #custom movement - choregraphe export
         elif command == 'śmierć':
+            setStandingPosture()
             self.executeMovement('Dead')
 
         #Posture change animations
@@ -393,13 +406,14 @@ class App:
                 print(err)
         #preprogrammed animations
         else:
+            setStandingPosture()
             try:
                 animationPlayer.runTag(ta.animTags[ta.getIndex(ta.animTags,command)][1])
             except BaseException as err:
                 print("Error:")
                 print(err)
 
-
+        characterEyes()
    
 # Create a window and pass it to the Application object
 App(tk.Tk(), "Robotyczne przedstawienie: GRUPA " + GROUP)

@@ -13,7 +13,7 @@ animTags = [
 ['powiedz','ok','#B2AD72'],
 ['złość', 'Angry_1', '#CB2805'], 
 ['strach', 'Fear_1', '#E1AE00'], 
-['smutek', 'Exauhsted_2', '#008FE1'], 
+['smutek', 'Exhausted_2', '#008FE1'], 
 ['płacz', 'Sad_1', '#073876'], 
 ['zaskoczenie', 'Surprise_3', '#EB900C'], 
 ['radość', 'Happy_3', '#11BF08'], 
